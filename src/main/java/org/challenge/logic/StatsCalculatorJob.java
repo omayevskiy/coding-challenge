@@ -26,23 +26,23 @@ public class StatsCalculatorJob {
      */
     @Scheduled(fixedDelay = 98)
     public void cacheStats() {
-        SalesAmount salesAmount = statsService.salesQueue().pollFirst();
+        SalesAmount salesAmount = statsService.retrieveNextSalesAmount();
         LocalDateTime now = LocalDateTime.now(clock).withNano(0);
         while (salesAmount != null && !salesAmount.getTime().isAfter(Instant.now(clock))) {
             /*
               Because sales requests are processed sequentially, this way we don't need to care about increasing the
               aggregated sales amount in parallel and use Atomic data structures.
              */
-            SalesAmountPerSecond salesAmountPerSecond = statsService.statsQueue().peekLast();
+            SalesAmountPerSecond salesAmountPerSecond = statsService.getLastSalesAmountPerSecond();
             if (null != salesAmountPerSecond && salesAmountPerSecond.getTime().equals(now)) {
                 salesAmountPerSecond.addSalesAmount(salesAmount.getAmount());
             } else {
-                statsService.statsQueue().add(new SalesAmountPerSecond(
+                statsService.addSalesAmountPerSecond(new SalesAmountPerSecond(
                         salesAmount.getAmount(),
                         1,
                         now));
             }
-            salesAmount = statsService.salesQueue().pollFirst();
+            salesAmount = statsService.retrieveNextSalesAmount();
         }
     }
 }

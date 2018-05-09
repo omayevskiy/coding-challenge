@@ -26,11 +26,11 @@ public class StatsSecondsCleanupJob {
      */
     @Scheduled(fixedDelay = 123)
     public void cleanup() {
-        SalesAmountPerSecond salesAmountPerSecond = statsService.statsQueue().peekFirst();
+        SalesAmountPerSecond salesAmountPerSecond = statsService.getLastSalesAmountPerSecond();
         LocalDateTime now = LocalDateTime.now(clock);
         while (salesAmountPerSecond != null
                 && salesAmountPerSecond.getTime().isBefore(now.minus(60, ChronoUnit.SECONDS))) {
-            salesAmountPerSecond = statsService.statsQueue().pollFirst();
+            salesAmountPerSecond = statsService.getAndRemoveLastSalesAmountPerSecond();
         }
     }
 }

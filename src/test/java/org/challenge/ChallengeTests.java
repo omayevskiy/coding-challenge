@@ -32,7 +32,7 @@ class ChallengeTests {
 
     @BeforeEach
     void init() {
-        statsService.statsQueue().clear();
+        statsService.statsQueue.clear();
     }
 
     @Test

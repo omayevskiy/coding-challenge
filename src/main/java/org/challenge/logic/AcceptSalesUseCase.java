@@ -21,6 +21,6 @@ public class AcceptSalesUseCase {
     }
 
     public void accept(String salesAmount) {
-        statsService.salesQueue().add(new SalesAmount(new BigDecimal(salesAmount), Instant.now(clock)));
+        statsService.addSalesAmount(new SalesAmount(new BigDecimal(salesAmount), Instant.now(clock)));
     }
 }
