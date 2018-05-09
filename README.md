@@ -11,7 +11,7 @@ Its intention is to evaluate the implementation against the criteria explained b
 Context
 ------------
 
-My team is asked to build a microservice that will calculate
+A team is asked to build a microservice that will calculate
 real-time statistics of item sales on a marketplace platform. This microservice will feed data
 to a dashboard installed in a business team’s room.
 The microservice shall have a REST interface with two endpoints. The first endpoint will be
@@ -89,6 +89,6 @@ Decision
 Use webflux (netty) to handle massive amount of requests. To save memory don't store every request for one minute. 
 The service must handle 150.000 requests per minute, persisting each request would consume a lot of memory.
 Instead use two queues, one for incoming sales amounts and one for aggregated sales amount per second.
-The incoming sales requests are kept only for a very short amount of time, less then one second. On the other hand 
+The incoming sales requests are kept in memory only for a very short amount of time. On the other hand 
 keep aggregated sales amounts per second for the last minute. If statistics endpoint is invoked, 
 it calculates the result based on the last 60 aggregated seconds. This way calculation is fast and memory usage is low.
